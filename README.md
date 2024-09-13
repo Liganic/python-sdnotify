@@ -18,10 +18,6 @@ function on non-systemd based systems. However, setting `debug=True` will
 cause this method to raise any exceptions generated to the caller, to
 aid in debugging.
 
-# Installation
-
-`pip install sdnotify`
-
 # Example Usage
 
 This is an example of a simple Python service that informs `systemd` when its
