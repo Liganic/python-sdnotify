@@ -1,5 +1,9 @@
 # systemd Service Notification
 
+> [!NOTE]
+> This is a fork of https://github.com/bb4242/sdnotify/ keeping the project
+> alive without major changes.
+
 This is a pure Python implementation of the
 [`systemd`](http://www.freedesktop.org/wiki/Software/systemd/)
 [`sd_notify`](http://www.freedesktop.org/software/systemd/man/sd_notify.html)

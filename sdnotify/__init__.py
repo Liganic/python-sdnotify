@@ -1,26 +1,16 @@
+"""A pure Python implementation of systemd's service notification protocol (sd_notify)."""
+
+import codecs
 import socket
 import os
 import sys
 
-__version__ = "0.3.2"
 
-# Byte conversion utility for compatibility between
-# Python 2 and 3.
-# http://python3porting.com/problems.html#nicer-solutions
-if sys.version_info < (3,):
-    def _b(x):
-        return x
-else:
-    import codecs
-    def _b(x):
-        return codecs.latin_1_encode(x)[0]
-
-
-class SystemdNotifier:
+class SystemdNotifier:  # pylint: disable=too-few-public-methods
     """This class holds a connection to the systemd notification socket
     and can be used to send messages to systemd using its notify method."""
 
-    def __init__(self, debug=False):
+    def __init__(self, debug: bool = False):
         """Instantiate a new notifier object. This will initiate a connection
         to the systemd notification socket.
 
@@ -37,12 +27,12 @@ class SystemdNotifier:
             if addr[0] == '@':
                 addr = '\0' + addr[1:]
             self.socket.connect(addr)
-        except Exception:
+        except Exception:  # pylint: disable=broad-exception-caught
             self.socket = None
             if self.debug:
                 raise
 
-    def notify(self, state):
+    def notify(self, state: str):
         """Send a notification to systemd. state is a string; see
         the man page of sd_notify (http://www.freedesktop.org/software/systemd/man/sd_notify.html)
         for a description of the allowable values.
@@ -53,7 +43,7 @@ class SystemdNotifier:
         cause this method to raise any exceptions generated to the caller, to
         aid in debugging."""
         try:
-            self.socket.sendall(_b(state))
-        except Exception:
+            self.socket.sendall(state.encode())
+        except Exception:  # pylint: disable=broad-exception-caught
             if self.debug:
                 raise
