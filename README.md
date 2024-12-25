@@ -26,7 +26,7 @@ which can be viewed with `systemctl status test`.
 
 ## `test.py`
 ```python
-import sdnotify
+from sdnotify import sd_notify
 import time
 
 print("Test starting up...")
@@ -36,30 +36,30 @@ time.sleep(10)
 print("Test startup finished")
 
 # Inform systemd that we've finished our startup sequence...
-n = sdnotify.SystemdNotifier()
-n.notify("READY=1")
+sd_notify.ready()
 
 count = 1
 while True:
 	print("Running... {}".format(count))
-	n.notify("STATUS=Count is {}".format(count))
+	sd_notify.status("Count is {}".format(count))
 	count += 1
 	time.sleep(2)
 ```
 
 ## `test.service`
+```properties
+[Unit]
+Description=A test service written in Python
 
-    [Unit]
-    Description=A test service written in Python
+[Service]
+# Note: setting PYTHONUNBUFFERED is necessary to see the output of this service in the journal
+# See https://docs.python.org/2/using/cmdline.html#envvar-PYTHONUNBUFFERED
+Environment=PYTHONUNBUFFERED=true
 
-    [Service]
-    # Note: setting PYTHONUNBUFFERED is necessary to see the output of this service in the journal
-    # See https://docs.python.org/2/using/cmdline.html#envvar-PYTHONUNBUFFERED
-    Environment=PYTHONUNBUFFERED=true
+# Adjust this line to the correct path to test.py
+ExecStart=/usr/bin/python /path/to/test.py
 
-	# Adjust this line to the correct path to test.py
-    ExecStart=/usr/bin/python /path/to/test.py
-
-    # Note that we use Type=notify here since test.py will send "READY=1"
-    # when it's finished starting up
-	Type=notify
+# Note that we use Type=notify here since test.py will send "READY=1"
+# when it's finished starting up
+Type=notify
+```
